@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.png binary
+THIRD_PARTY_NOTICES.txt -whitespace
+icons/LICENSE-MDI.txt -whitespace
