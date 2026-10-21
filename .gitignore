@@ -3,3 +3,8 @@ artifacts/
 playwright-profile/
 *.zip
 dist/
+
+.signing/
+*.pem
+*.key
+*.crx

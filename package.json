@@ -8,7 +8,8 @@
     "build": "node scripts/generate-icons.mjs && node scripts/update-notices.mjs && vite build",
     "test:browser": "node tests/browser-check.mjs",
     "icons:generate": "node scripts/generate-icons.mjs",
-    "test:calendar": "node tests/calendar-browser.mjs"
+    "test:calendar": "node tests/calendar-browser.mjs",
+    "pack:crx": "node scripts/package-crx.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
