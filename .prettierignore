@@ -1,0 +1,11 @@
+node_modules/
+dist/
+artifacts/
+.signing/
+icons/
+mdi-controls.css
+THIRD_PARTY_NOTICES.txt
+pnpm-lock.yaml
+*.pem
+*.key
+*.crx

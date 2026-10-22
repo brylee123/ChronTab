@@ -126,17 +126,18 @@ Run `pnpm icons:generate` to regenerate logo PNGs, the source logo SVG, and nati
 
 ## Development and verification
 
-With Node.js 22.12+ and pnpm installed:
+With Node.js 22.13+ or 24+, and pnpm 11.25.0 installed:
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm build
-pnpm test
+pnpm check
 ```
 
-Load dist as the unpacked extension after building. The source HTML files depend on the build step. After installing dependencies, unit tests can also run directly: `node --test tests/*.test.js`. Tests cover recurrence boundaries, DST behavior, validation, service worker scheduling, import merging, storage failures, and concurrent writes.
+Load dist as the unpacked extension after building. The source HTML files depend on the build step. Unit tests run through a portable Node launcher with America/New_York fixed as the time zone, so daylight-saving cases exercise real 23-hour and 25-hour days. Tests cover recurrence boundaries, DST behavior, validation, service worker scheduling, import merging, storage failures, and concurrent writes.
 
 After loading unpacked, manually verify:
+
 1. Snooze a disposable webpage for one minute from now; verify closure and reopening.
 2. Create a weekly rule with several days and each ending option.
 3. Edit, pause, resume, open now, and delete schedules.
@@ -144,6 +145,26 @@ After loading unpacked, manually verify:
 5. Close and reopen the browser after a wake time; verify one recovery opening.
 6. Repeat in your other Chromium browser.
 
-Real-browser verification is in `tests/browser-check.mjs`. It uses Playwright with an isolated headless Edge profile; the default Playwright import points at the Codex bundled runtime on this machine. Set PLAYWRIGHT_MODULE to your local Playwright module path and CHRONTAB_BROWSER to a Chromium executable if needed. Run `pnpm test:browser` and `pnpm test:calendar` after building. The second check covers the weekly grid, list management, conflict blocking, nested groups, calendar projection, and version 2 backups. The check exercises the actual loaded extension, recurrence creation, pause/resume, filters, JSON round trips, theme persistence and system changes, popup rendering, and an automatic alarm reopening a local test page. Popup rendering injects a sample current-tab result; real toolbar activeTab permission should also be checked manually.
+Browser checks use the declared Playwright development dependency and temporary isolated profiles. On Windows, they prefer an installed Edge; other platforms use Playwright Chromium. Set CHRONTAB_BROWSER to override browser discovery.
+
+```sh
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
+
+The two checks cover the actual loaded extension, recurrence creation, pause/resume, search and filters, themes, automatic alarms, weekly work blocks, nested conditions, calendar projection, and JSON backup restoration. Screenshots go to artifacts/. Browser fixtures use future dates so they do not expire. Popup rendering injects a sample current-tab result; real toolbar activeTab permission should also be checked manually.
+
+## Code quality and architecture
+
+- `pnpm lint` runs ESLint's recommended checks plus unused-variable, equality, constant, and explicit-block rules.
+- `pnpm format` formats source with Prettier; `pnpm format:check` verifies it without editing.
+- `pnpm check` runs lint, formatting, unit tests, and the production build.
+- The validation workflow checks Node 22/24, then runs the browser scenarios on Chromium. Actions are pinned to commit revisions and use read-only repository permissions.
+
+The worker in background.js only registers extension events. scheduler.js owns serialized storage mutations and alarms through an injected browser adapter and clock. schedule.js contains recurrence arithmetic; date-engine.js combines date rules; rule-schema.js validates expressions; date-lists.js handles the offline holiday/workday database.
+
+UI startup, runtime messaging, feedback, the schedule editor, and the recurrence dialog are separate modules. Shared limits live in limits.js. Runtime licenses are collected from the declared dependency graph rather than a package-manager-specific cache layout. Generated artifacts, license text, and private signing keys are excluded from formatting.
+
+After an automatic or manual opening, the worker retains pending progress in memory and journals it in session storage until local storage accepts it. Session storage survives normal service-worker suspension; a recovery alarm retries persistence failures. Requests flush pending progress before reading state. A process crash between opening a tab and writing the journal, or a full browser restart while local storage is unavailable, can still replay an opening. This is not an exactly-once guarantee.
 
 The extension has not been published to a browser store.
