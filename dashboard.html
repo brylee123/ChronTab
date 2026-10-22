@@ -1,11 +1,145 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Your snoozed tabs · Chrontab</title><script src="theme-init.js"></script><link rel="stylesheet" href="styles.css"></head>
-<body><div class="app-shell"><aside class="sidebar"><a class="brand" href="dashboard.html"><span class="brand-mark" data-icon="logo"></span> Chrontab</a><div class="sidebar-label">YOUR SPACE</div><button class="nav-item selected" id="view-all"><span data-icon="tab"></span> Snoozed tabs <span id="nav-count" class="count">0</span></button><button class="nav-item" id="view-calendar"><span data-icon="calendar-view"></span> Calendar</button><button class="nav-item" id="view-date-lists"><span data-icon="date-lists"></span> Date lists</button><div class="sidebar-bottom"><div class="little-moon" data-icon="night"></div><strong>Less open.<br>More headspace.</strong><p>Your tabs will be here<br>when you need them.</p><div class="local-label"><span class="status-dot" data-icon="database-check"></span> Saved locally</div></div></aside>
-<div class="main-shell"><header class="topbar"><span>Your tabs, on your time.</span><div class="toolbar"><div id="theme-controls"></div><button id="import" class="button subtle"><span data-icon="import"></span> Import</button><button id="export" class="button subtle"><span data-icon="export"></span> Export JSON</button><input id="import-file" type="file" accept=".json,application/json" hidden></div></header>
-<main class="dashboard"><div class="heading-row"><div><div class="eyebrow">MAKE SPACE FOR NOW</div><h1>A later for every tab<span class="purple">.</span></h1><p class="muted">A quieter browser. Nothing forgotten.</p></div><button id="add" class="button primary"><span data-icon="plus"></span> Schedule a tab</button></div>
-<div class="view-switch" role="group" aria-label="Dashboard view"><button data-view="list" aria-pressed="true"><span data-icon="list"></span> List</button><button data-view="calendar" aria-pressed="false"><span data-icon="calendar-view"></span> Calendar</button><button data-view="lists" aria-pressed="false"><span data-icon="date-lists"></span> Date lists</button></div><div class="stats"><div><span class="stat-label">SNOOZED</span><strong id="total">0</strong><span class="stat-description">tabs off your mind</span></div><div><span class="stat-label">COMING UP TODAY</span><strong id="today">0</strong><span class="stat-description">ready when you are</span></div><div><span class="stat-label">ON REPEAT</span><strong id="repeating">0</strong><span class="stat-description">a rhythm of their own</span></div></div>
-<section id="list-view" class="collection" aria-labelledby="collection-title"><div class="collection-tools"><h2 id="collection-title">Your snoozed tabs <span id="list-count" class="count">0</span></h2><label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="Find a tab…" aria-label="Search tabs"></label></div><div class="filter-row" role="group" aria-label="Filter schedules"><button class="filter active" data-filter="all" aria-pressed="true">All tabs</button><button class="filter" data-filter="once" aria-pressed="false">One time</button><button class="filter" data-filter="repeat" aria-pressed="false">Recurring</button><button class="filter" data-filter="paused" aria-pressed="false">Paused</button><label class="sort">Sort by <select id="sort" aria-label="Sort schedules"><option value="time">Wake-up time</option><option value="title">Title</option></select></label></div>
-<div id="list"></div><div id="empty" class="empty"><div class="empty-art" data-icon="sleep"></div><h3>A little breathing room.</h3><p>Snooze a tab from the toolbar, or schedule a URL here.<br>Everything you put off will have a place to come back to.</p><button id="empty-add" class="button secondary">Schedule your first tab <span data-icon="open-in-new"></span></button></div></section>
-<section id="calendar-view" class="collection calendar-panel" hidden></section><section id="date-lists-view" class="date-lists-panel" hidden></section><p class="footnote">All times are in your device’s local time zone. Missed wakeups return when your browser is running.</p><p id="message" role="status" aria-live="polite"></p></main><footer class="dashboard-footer"><span class="brand-small"><span data-icon="logo"></span> Chrontab</span><span>A fresh start, one tab at a time.</span></footer></div></div>
-<dialog id="edit-dialog" class="edit-dialog"><div class="dialog-heading"><h2 id="edit-heading">Schedule a tab</h2><button id="close-editor" class="icon-button" aria-label="Close editor"><span data-icon="close"></span></button></div><div id="editor"></div><p id="edit-error" class="error" role="alert"></p></dialog>
-<script type="module" src="dashboard.js"></script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Your snoozed tabs · Chrontab</title>
+    <script src="/theme-init.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="dashboard.html"
+          ><span class="brand-mark" data-icon="logo"></span> Chrontab</a
+        >
+        <div class="sidebar-label">YOUR SPACE</div>
+        <button class="nav-item selected" id="view-all">
+          <span data-icon="tab"></span> Snoozed tabs
+          <span id="nav-count" class="count">0</span></button
+        ><button class="nav-item" id="view-calendar">
+          <span data-icon="calendar-view"></span> Calendar</button
+        ><button class="nav-item" id="view-date-lists">
+          <span data-icon="date-lists"></span> Date lists
+        </button>
+        <div class="sidebar-bottom">
+          <div class="little-moon" data-icon="night"></div>
+          <strong>Less open.<br />More headspace.</strong>
+          <p>Your tabs will be here<br />when you need them.</p>
+          <div class="local-label">
+            <span class="status-dot" data-icon="database-check"></span> Saved locally
+          </div>
+        </div>
+      </aside>
+      <div class="main-shell">
+        <header class="topbar">
+          <span>Your tabs, on your time.</span>
+          <div class="toolbar">
+            <div id="theme-controls"></div>
+            <button id="import" class="button subtle">
+              <span data-icon="import"></span> Import</button
+            ><button id="export" class="button subtle">
+              <span data-icon="export"></span> Export JSON</button
+            ><input id="import-file" type="file" accept=".json,application/json" hidden />
+          </div>
+        </header>
+        <main class="dashboard">
+          <div class="heading-row">
+            <div>
+              <div class="eyebrow">MAKE SPACE FOR NOW</div>
+              <h1>A later for every tab<span class="purple">.</span></h1>
+              <p class="muted">A quieter browser. Nothing forgotten.</p>
+            </div>
+            <button id="add" class="button primary">
+              <span data-icon="plus"></span> Schedule a tab
+            </button>
+          </div>
+          <div class="view-switch" role="group" aria-label="Dashboard view">
+            <button data-view="list" aria-pressed="true"><span data-icon="list"></span> List</button
+            ><button data-view="calendar" aria-pressed="false">
+              <span data-icon="calendar-view"></span> Calendar</button
+            ><button data-view="lists" aria-pressed="false">
+              <span data-icon="date-lists"></span> Date lists
+            </button>
+          </div>
+          <div class="stats">
+            <div>
+              <span class="stat-label">SNOOZED</span><strong id="total">0</strong
+              ><span class="stat-description">tabs off your mind</span>
+            </div>
+            <div>
+              <span class="stat-label">COMING UP TODAY</span><strong id="today">0</strong
+              ><span class="stat-description">ready when you are</span>
+            </div>
+            <div>
+              <span class="stat-label">ON REPEAT</span><strong id="repeating">0</strong
+              ><span class="stat-description">a rhythm of their own</span>
+            </div>
+          </div>
+          <section id="list-view" class="collection" aria-labelledby="collection-title">
+            <div class="collection-tools">
+              <h2 id="collection-title">
+                Your snoozed tabs <span id="list-count" class="count">0</span>
+              </h2>
+              <label class="search"
+                ><span data-icon="search"></span
+                ><input
+                  id="search"
+                  type="search"
+                  placeholder="Find a tab…"
+                  aria-label="Search tabs"
+              /></label>
+            </div>
+            <div class="filter-row" role="group" aria-label="Filter schedules">
+              <button class="filter active" data-filter="all" aria-pressed="true">All tabs</button
+              ><button class="filter" data-filter="once" aria-pressed="false">One time</button
+              ><button class="filter" data-filter="repeat" aria-pressed="false">Recurring</button
+              ><button class="filter" data-filter="paused" aria-pressed="false">Paused</button
+              ><label class="sort"
+                >Sort by
+                <select id="sort" aria-label="Sort schedules">
+                  <option value="time">Wake-up time</option>
+                  <option value="title">Title</option>
+                </select></label
+              >
+            </div>
+            <div id="list"></div>
+            <div id="empty" class="empty">
+              <div class="empty-art" data-icon="sleep"></div>
+              <h3>A little breathing room.</h3>
+              <p>
+                Snooze a tab from the toolbar, or schedule a URL here.<br />Everything you put off
+                will have a place to come back to.
+              </p>
+              <button id="empty-add" class="button secondary">
+                Schedule your first tab <span data-icon="open-in-new"></span>
+              </button>
+            </div>
+          </section>
+          <section id="calendar-view" class="collection calendar-panel" hidden></section>
+          <section id="date-lists-view" class="date-lists-panel" hidden></section>
+          <p class="footnote">
+            All times are in your device’s local time zone. Missed wakeups return when your browser
+            is running.
+          </p>
+          <p id="message" role="status" aria-live="polite"></p>
+        </main>
+        <footer class="dashboard-footer">
+          <span class="brand-small"><span data-icon="logo"></span> Chrontab</span
+          ><span>A fresh start, one tab at a time.</span>
+        </footer>
+      </div>
+    </div>
+    <dialog id="edit-dialog" class="edit-dialog">
+      <div class="dialog-heading">
+        <h2 id="edit-heading">Schedule a tab</h2>
+        <button id="close-editor" class="icon-button" aria-label="Close editor">
+          <span data-icon="close"></span>
+        </button>
+      </div>
+      <div id="editor"></div>
+      <p id="edit-error" class="error" role="alert"></p>
+    </dialog>
+    <script type="module" src="dashboard.js"></script>
+  </body>
+</html>
